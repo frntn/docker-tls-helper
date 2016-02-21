@@ -72,11 +72,14 @@ P="${RST}$(tput bold ; tput setaf 3)"
 CODE="${RST}$(tput setaf 6)"
 H1="${RST}$(tput bold ; tput setaf 3)"
 
-  echo "$H1
+  echo "$P
+ Files have been created in $CODE$b$(readlink -f .)${P}
+ $H1
  === SERVER SETUP ===
  $P
  Send files and setup your remote server
  $CODE
+   local> ${b}cd dockertls${CODE}
    local> ${b}scp ca.crt server.crt server.key remote.example.com:/etc/docker/tls${CODE}
    local> ${b}ssh remote${CODE}
    remote> ${b}echo 'DOCKER_OPTS=\"\${DOCKER_OPTS} --tlsverify --tlscacert=/etc/docker/tls/ca.crt --tlscert=/etc/docker/tls/server.crt --tlskey=/etc/docker/tls/server.key -H=0.0.0.0:2376 -H unix:///var/run/docker.sock \"' | tee -a /etc/default/docker${CODE}
