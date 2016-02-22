@@ -1,6 +1,6 @@
 # frntn/docker-tls-helper
 
-Automate the process described on *Docker* website to [Protect the Docker daemon socket](https://docs.docker.com/engine/security/https/) in one command.
+One command to generate the numerous certificates and keys required to [protect the Docker daemon socket](https://docs.docker.com/engine/security/https/).
 
 ## Usage
 
