@@ -5,9 +5,6 @@
 
 CA_SUBJ="${CA_SUBJ:-"/C=${CA_C:-"FR"}/L=${CA_L:-"Paris"}/O=${CA_O:-"Ekino"}/OU=${CA_OU:-"DevOps"}/CN=${CA_CN:-"Docker TLS"}"}"
 
-mkdir -p dockertls
-cd dockertls
-
 # --------------------------------------- CA
 
 create_ca() {
@@ -125,6 +122,10 @@ display_usage() {
 # --------------------------------------- MAIN
 
 main() {
+
+  mkdir -p dockertls
+  cd dockertls
+
   create_ca
   create_server
   create_client
