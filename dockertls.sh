@@ -84,20 +84,20 @@ display_usage() {
  Prepare your remote server and stop docker service
  $CODE
    local> ${b}ssh remote${CODE}
-   remote> ${b}rm -rfv /etc/docker/tls${CODE}
-   remote> ${b}mkdir -pv /etc/docker/tls${CODE}
-   remote> ${b}chown root:root /etc/docker/tls${CODE}
-   remote> ${b}chmod 100 /etc/docker/tls${CODE}
-   remote> ${b}service docker stop${CODE}
+   remote> ${b}sudo mkdir -pv /etc/docker/tls${CODE}
+   remote> ${b}sudo chown root:root /etc/docker/tls${CODE}
+   remote> ${b}sudo chmod 711 /etc/docker/tls${CODE}
+   remote> ${b}sudo service docker stop${CODE}
  $P
  Send files and setup your remote server
  $CODE
    local> ${b}cd $loc${CODE}
-   local> ${b}scp ca.crt server.crt server.key remote.example.com:/etc/docker/tls${CODE}
+   local> ${b}scp ca.crt server.crt server.key remote.example.com:~${CODE}
 
    local> ${b}ssh remote${CODE}
-   remote> ${b}echo 'DOCKER_OPTS=\"\${DOCKER_OPTS} --tlsverify --tlscacert=/etc/docker/tls/ca.crt --tlscert=/etc/docker/tls/server.crt --tlskey=/etc/docker/tls/server.key -H=0.0.0.0:2376 -H unix:///var/run/docker.sock \"' | tee -a /etc/default/docker${CODE}
-   remote> ${b}service docker start${CODE}
+   remote> ${b}sudo mv ca.crt server.crt server.key /etc/docker/tls
+   remote> ${b}echo 'DOCKER_OPTS=\"\${DOCKER_OPTS} --tlsverify --tlscacert=/etc/docker/tls/ca.crt --tlscert=/etc/docker/tls/server.crt --tlskey=/etc/docker/tls/server.key -H=0.0.0.0:2376 -H unix:///var/run/docker.sock \"' | sudo tee -a /etc/default/docker${CODE}
+   remote> ${b}sudo service docker start${CODE}
  $H1
  === CLIENT SETUP ===
  $P
