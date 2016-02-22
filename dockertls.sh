@@ -10,6 +10,7 @@ cd dockertls
 
 # --------------------------------------- CA
 
+create_ca() {
   umask 177
   < /dev/urandom tr -dc "+=\-%*\!&#':;{}()[]|^~\$_2-9T-Z" | head -c65 > ca.pass
 
@@ -18,11 +19,11 @@ cd dockertls
       -new -x509 -days ${CA_EXPIRE_DAYS:-"365"} \
       -newkey rsa:4096 -keyout ca.key -passout file:ca.pass \
       -out ca.crt -subj "${CA_SUBJ}"
+}
 
 # --------------------------------------- SERVER
 
-# create the server certificates
-
+create_server() {
   # .key / .csr
   openssl req -new \
       -newkey rsa:4096 -keyout server.key -nodes \
@@ -37,11 +38,11 @@ cd dockertls
       -CA ca.crt -CAkey ca.key -CAserial ca.srl -CAcreateserial \
       -out server.crt \
       -extfile <(echo -e "${EXTFILE}")
+}
 
 # --------------------------------------- CLIENT
 
-# create the client certificates
-
+create_client() {
   # .key / .csr
   openssl req -new \
       -newkey rsa:4096 -keyout client.key -nodes \
@@ -55,24 +56,28 @@ cd dockertls
       -CA ca.crt -CAkey ca.key -CAserial ca.srl -CAcreateserial \
       -out client.crt \
       -extfile <(echo -e "${EXTFILE}")
+}
 
 # --------------------------------------- PERMS
 
-chmod 600 ca.key server.key client.key
-chmod 644 ca.crt server.crt client.crt
-rm server.csr client.csr
+fix_perms() {
+  chmod 600 ca.key server.key client.key
+  chmod 644 ca.crt server.crt client.crt
+  rm server.csr client.csr
+}
 
 # --------------------------------------- USAGE
 
-b="$(tput bold)"
-r="$(tput sgr0)"
+display_usage() {
+  b="$(tput bold)"
+  r="$(tput sgr0)"
 
-RST="$(tput sgr0)"
-P="${RST}$(tput bold ; tput setaf 3)"
-CODE="${RST}$(tput setaf 6)"
-H1="${RST}$(tput bold ; tput setaf 3)"
+  RST="$(tput sgr0)"
+  P="${RST}$(tput bold ; tput setaf 3)"
+  CODE="${RST}$(tput setaf 6)"
+  H1="${RST}$(tput bold ; tput setaf 3)"
 
-loc="$(readlink -f .)"
+  loc="$(readlink -f .)"
 
   echo "$P
  Files have been created in $CODE$b$loc${P}
@@ -112,7 +117,20 @@ loc="$(readlink -f .)"
  $P
  Try your new setup
  $CODE
-   local> ${b}export DOCKER_HOST=tcp://remotehost.example.com:2376 DOCKER_TLS_VERIFY=1${CODE}
+   local> ${b}export DOCKER_HOST=tcp://remote.example.com:2376 DOCKER_TLS_VERIFY=1${CODE}
    local> ${b}docker ps${CODE}
  $RST"
+}
+
+# --------------------------------------- MAIN
+
+main() {
+  create_ca
+  create_server
+  create_client
+  fix_perms
+  display_usage
+}
+
+main
 
