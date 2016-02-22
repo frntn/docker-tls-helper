@@ -1,1 +1,5 @@
-dockertls/*
+*.srl
+*.key
+*.csr
+*.crt
+*.pass
