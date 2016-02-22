@@ -4,6 +4,7 @@
 : ${CLT_SUBJ}
 
 CA_SUBJ="${CA_SUBJ:-"/C=${CA_C:-"FR"}/L=${CA_L:-"Paris"}/O=${CA_O:-"Ekino"}/OU=${CA_OU:-"DevOps"}/CN=${CA_CN:-"Docker TLS"}"}"
+CERTS_PATH="${CERTS_PATH:-"dockertls"}"
 
 # --------------------------------------- CA
 
@@ -123,8 +124,8 @@ display_usage() {
 
 main() {
 
-  mkdir -p dockertls
-  cd dockertls
+  mkdir -p "${CERTS_PATH}"
+  cd "${CERTS_PATH}"
 
   create_ca
   create_server
