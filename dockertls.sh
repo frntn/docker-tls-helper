@@ -10,7 +10,7 @@ CERTS_PATH="${CERTS_PATH:-"dockertls"}"
 
 create_ca() {
   umask 177
-  < /dev/urandom tr -dc "+=\-%*\!&#':;{}()[]|^~\$_2-9T-Z" | head -c65 > ca.pass
+  env LC_CTYPE=C < /dev/urandom tr -dc "+=\-%*\!&#':;{}()[]|^~\$_2-9T-Z" | head -c65 > ca.pass
 
   # .key / .crt
   openssl req \
